@@ -280,49 +280,72 @@ def open_gui():
     label_arquivo = Label(top_frame, textvariable=selected_file_var,wraplength=900, bg="#1e1e1e", fg="red") 
     label_arquivo.pack(side="left", padx=12) 
 
-
     # mapping area
-    map_frame = Frame(root)
-    map_frame.pack(fill="x", padx=12, pady=(8,6))
-    Label(map_frame, text="2) Mapeie as colunas principais (deixe em branco as opcionais):", font=("Arial", 11, "bold"), bg="#1e1e1e", fg="#eaeaea").pack(anchor="w")
-    maps_inner = Frame(map_frame); maps_inner.pack(fill="x", pady=(6,4))
-    left_col = Frame(maps_inner); right_col = Frame(maps_inner)
-    left_col.pack(side="left", fill="x", expand=True, padx=(0,6))
-    right_col.pack(side="left", fill="x", expand=True, padx=(6,0))
+    map_frame = Frame(root, bg="#1e1e1e")
+    map_frame.pack(fill="x", padx=12, pady=(8, 6))
 
-    left_keys = ["Peso de","Peso até","UF","Cidade","Preço"]
-    right_keys = ["Preço extra","CEP de","CEP até","Prazo"]
-    for k in left_keys:
-        Label(left_col, text=k + ":", bg="#1e1e1e", fg="#eaeaea").pack(anchor="w")
-        map_vars[k].set("")
-        om = OptionMenu(left_col, map_vars[k], "")
-        # style OptionMenu (botão e seu menu)
+    Label(
+        map_frame,
+        text="2) Mapeie as colunas principais (deixe em branco as opcionais):",
+        font=("Arial", 11, "bold"),
+        bg="#1e1e1e",
+        fg="#eaeaea"
+    ).pack(anchor="w")
+
+    # container interno com grid
+    maps_inner = Frame(map_frame, bg="#1e1e1e")
+    maps_inner.pack(fill="x", pady=(6, 4))
+
+    left_keys = ["Peso de", "Peso até", "UF", "Cidade", "Preço"]
+    right_keys = ["Preço extra", "CEP de", "CEP até", "Prazo"]
+
+    # proporções: menos peso nas labels, mais nos campos
+    maps_inner.columnconfigure(0, weight=0, minsize=90)   # label esquerda
+    maps_inner.columnconfigure(1, weight=1, uniform="cols")  # input esquerda
+    maps_inner.columnconfigure(2, weight=0, minsize=90)   # label direita
+    maps_inner.columnconfigure(3, weight=1, uniform="cols")  # input direita
+
+    # esquerda
+    for row, key in enumerate(left_keys):
+        Label(
+            maps_inner,
+            text=key + ":",
+            bg="#1e1e1e",
+            fg="#eaeaea",
+            anchor="e"  # texto encostado à direita (gruda no campo)
+        ).grid(row=row, column=0, sticky="e", padx=(0, 4), pady=(20, 4))
+
+        map_vars[key].set("")
+        om = OptionMenu(maps_inner, map_vars[key], "")
         try:
             om.configure(bg="#f6f6f6", fg="#000000", activebackground="#e8e8e8")
-        except:
-            pass
-        try:
             menu_widget = om["menu"]
             menu_widget.configure(bg="#f6f6f6", fg="#000000", activebackground="#e8e8e8")
         except:
             pass
-        om.pack(fill="x", pady=(0,6))
-        map_vars_menus[k] = om
-    for k in right_keys:
-        Label(right_col, text=k + ":", bg="#1e1e1e", fg="#eaeaea").pack(anchor="w")
-        map_vars[k].set("")
-        om = OptionMenu(right_col, map_vars[k], "")
+        om.grid(row=row, column=1, sticky="ew", padx=(0, 10), pady=(2, 4))
+        map_vars_menus[key] = om
+
+    # direita
+    for row, key in enumerate(right_keys):
+        Label(
+            maps_inner,
+            text=key + ":",
+            bg="#1e1e1e",
+            fg="#eaeaea",
+            anchor="e"
+        ).grid(row=row, column=2, sticky="e", padx=(10, 4), pady=(2, 4))
+
+        map_vars[key].set("")
+        om = OptionMenu(maps_inner, map_vars[key], "")
         try:
             om.configure(bg="#f6f6f6", fg="#000000", activebackground="#e8e8e8")
-        except:
-            pass
-        try:
             menu_widget = om["menu"]
             menu_widget.configure(bg="#f6f6f6", fg="#000000", activebackground="#e8e8e8")
         except:
             pass
-        om.pack(fill="x", pady=(0,6))
-        map_vars_menus[k] = om
+        om.grid(row=row, column=3, sticky="ew", padx=(0, 0), pady=(2, 4))
+        map_vars_menus[key] = om
 
     # lower panel
     lower_panel = Frame(root)
