@@ -259,7 +259,7 @@ def process_file_custom_token(input_path, output_path,
 def open_gui():
     root = Tk()
     root.title("Gerar Classificação")
-    root.geometry("1100x820")
+    root.geometry("1100x920")
 
     selected_file_var = StringVar()
     selected_file_var.set("Nenhum arquivo selecionado")
